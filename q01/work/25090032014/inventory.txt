@@ -1,0 +1,4 @@
+0  inventory.txt
+11  docs/notes one.txt
+7  docs/.secret.txt
+0  tmp/empty.txt
