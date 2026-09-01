@@ -1,0 +1,257 @@
+% !TeX program = xelatex
+% ============================================================
+% 系统开发工具基础 · 第一周实验报告
+% 姓名：甘如嫣  学号：25090032014
+% 编译：xelatex 实验报告_第1周.tex
+% ============================================================
+\documentclass[12pt,a4paper]{ctexart}
+
+\usepackage[margin=2.2cm]{geometry}
+\usepackage{graphicx}
+\usepackage{listings}
+\usepackage{xcolor}
+\usepackage{enumitem}
+\usepackage{booktabs}
+\usepackage{amsmath}
+\usepackage{float}
+\usepackage[hidelinks]{hyperref}
+\usepackage{fancyhdr}
+
+\definecolor{theme}{RGB}{40,80,140}
+
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{\small\color{theme}系统开发工具基础 · 实验报告}
+\fancyhead[R]{\small 甘如嫣}
+\fancyfoot[C]{\small\thepage}
+\renewcommand{\headrule}{\color{theme}\rule{\headwidth}{0.4pt}}
+
+\lstset{
+  basicstyle=\ttfamily\small,
+  breaklines=true,
+  frame=single,
+  backgroundcolor=\color{gray!8},
+  showstringspaces=false,
+}
+
+% 长代码/文件名行允许适度拉松，避免个别行超出页边
+\emergencystretch=3em
+
+\newcommand{\shot}[3]{\begin{figure}[H]\centering\includegraphics[width=#3]{#2}\caption{#1}\end{figure}}
+
+\begin{document}
+
+% ================= 封面 =================
+\begin{titlepage}
+\centering
+\vspace*{3cm}
+{\Huge\bfseries\color{theme} 实验报告\par}
+\vspace{0.8cm}
+{\LARGE 系统开发工具基础（第一周）\par}
+\vspace{2.5cm}
+\begin{tabular}{rl}
+\textbf{姓名} & 甘如嫣 \\
+\textbf{学号} & 25090032014 \\
+\textbf{日期} & \today \\
+\end{tabular}
+\vfill
+\end{titlepage}
+
+\tableofcontents
+\newpage
+
+% ================= 1. GitHub =================
+\section{GitHub 仓库与提交记录}
+
+\subsection{仓库链接}
+仓库地址：\url{https://github.com/ganruyan/system-basics-tools}
+
+\subsection{提交记录}
+
+\shot{GitHub 提交记录}{report_imgs/commits.png}{0.92\textwidth}
+
+% ================= 2. 课上检查 =================
+\section{课上给助教检查的内容与结果}
+
+本节为课上完成、交由助教检查的四道课堂练习及其结果。
+
+\subsection{第 1 题：含空格文件名的批量整理}
+
+\textbf{主题：}Shell 基础与文件系统 \quad \textbf{建议用时：}12--15 分钟
+
+在当前目录新建 \texttt{q01}，并完全使用命令行完成下列任务。
+
+\begin{itemize}[leftmargin=2em]
+  \item 创建 \texttt{input/docs} 和 \texttt{input/tmp}；创建 \texttt{input/docs/notes one.txt}（内容为 \texttt{alpha} 和 \texttt{beta} 两行）、\texttt{input/docs/.secret.txt}（内容为 \texttt{hidden}）、\texttt{input/tmp/empty.txt}（空文件）以及 \texttt{input/run.log}（任意两行日志）。
+  \item 显示 \texttt{q01} 的绝对路径，并以长格式列出 \texttt{input} 下全部项目，包含隐藏文件。
+  \item 把 \texttt{input} 下所有 \texttt{.txt} 文件复制到 \texttt{work/<25090032014>/}，保留相对目录结构并正确处理名称中的空格。
+  \item 将复制后的目录权限设为 \texttt{750}、普通文件权限设为 \texttt{640}；生成 \texttt{inventory.txt}，列出相对路径和字节数。
+\end{itemize}
+
+\textbf{结果：}
+\shot{第 1 题（a）查看 input 目录结构}{report_imgs/q01a.png}{0.9\textwidth}
+\shot{第 1 题（b）复制结果与 inventory.txt}{report_imgs/q01b.png}{0.9\textwidth}
+
+\subsection{第 2 题：随机访问日志统计}
+
+\textbf{主题：}Shell 管道与文本处理 \quad \textbf{建议用时：}12--15 分钟
+
+在 \texttt{q02} 中创建 \texttt{access.csv}，并使用下方给定数据完成日志统计。
+
+\begin{lstlisting}
+timestamp,user,path,status,latency_ms
+09:00:01,alice,/api/users,200,120
+09:00:02,bob,/api/orders,500,310
+09:00:03,alice,/api/users,503,180
+09:00:04,carol,/login,500,90
+09:00:05,bob,/api/orders,502,260
+09:00:06,dave,/health,200,20
+09:00:07,alice,/api/orders,500,420
+09:00:08,carol,/api/users,500,150
+\end{lstlisting}
+
+\begin{itemize}[leftmargin=2em]
+  \item 编写 \texttt{analyze.sh}，接收一个 CSV 文件路径；文件不存在时将错误写入 stderr 并返回非零退出码。
+  \item 使用 Shell 管道以及 \texttt{awk}、\texttt{sort}、\texttt{head} 等工具，输出 HTTP 5xx 数量最多的前 2 个 path；按次数降序，次数相同时按 path 字典序。
+  \item 输出全部数据行的平均 \texttt{latency\_ms}，保留两位小数；表头不得计入。
+  \item 分别对 \texttt{access.csv} 和一个不存在的文件运行脚本；不得使用 Python、电子表格或手工统计。
+\end{itemize}
+
+\textbf{结果：}
+\shot{第 2 题运行结果}{report_imgs/q02.png}{0.9\textwidth}
+
+\subsection{第 3 题：制造、解决并解释一次合并冲突}
+
+\textbf{主题：}Version Control and Git \quad \textbf{建议用时：}12--15 分钟
+
+在 \texttt{q03} 中从零创建一个 Git 仓库，并主动制造、解决一次合并冲突。
+
+\begin{itemize}[leftmargin=2em]
+  \item 初始化仓库，在 \texttt{main} 创建 \texttt{config.txt}，内容为 \texttt{mode=normal}，并完成初始提交。
+  \item 创建 \texttt{feature-a}，把内容改为 \texttt{mode=safe} 并提交；从初始 \texttt{main} 创建 \texttt{feature-b}，把内容改为 \texttt{mode=fast} 并提交。
+  \item 回到 \texttt{main}，先合并 \texttt{feature-a}，再合并 \texttt{feature-b}；解决冲突时保留 \texttt{mode=safe}，并另加一行 \texttt{note=reviewed}。
+  \item 确认工作区干净，运行 \texttt{git log --all --graph --decorate --oneline} 查看历史。
+\end{itemize}
+
+\textbf{结果：}
+\shot{第 3 题（a）制造合并冲突}{report_imgs/q03a.png}{0.9\textwidth}
+\shot{第 3 题（b）解决冲突并查看历史}{report_imgs/q03b.png}{0.9\textwidth}
+
+\subsection{第 4 题：修复并构建一页技术说明}
+
+\textbf{主题：}LaTeX 文档编辑 \quad \textbf{建议用时：}12--15 分钟
+
+将下方模板保存为 \texttt{q04/report.tex}，补全内容并从命令行构建 PDF。
+
+\begin{lstlisting}
+\documentclass{article}
+\usepackage{amsmath}
+\begin{document}
+\title{Tool Report}
+\author{姓名—学号}
+\maketitle
+\section{Result}
+% 在此加入公式、表格及正文引用
+\end{document}
+\end{lstlisting}
+
+\begin{itemize}[leftmargin=2em]
+  \item 加入一个带编号和 label 的公式，并在正文中使用 \texttt{ref} 或 \texttt{eqref} 引用。
+  \item 加入一个 2 行 2 列表格，设置 caption 和 label，并在正文中引用该表。
+  \item 使用 \texttt{latexmk -pdf -halt-on-error} 或 \texttt{tectonic} 生成 \texttt{report.pdf}。
+  \item 确认 PDF 能打开，且交叉引用不显示 ``??''。
+\end{itemize}
+
+\textbf{结果：}
+\shot{第 4 题（a）从命令行编译 PDF}{report_imgs/q04a.png}{0.9\textwidth}
+\shot{第 4 题（b）生成的 PDF 与交叉引用}{report_imgs/q04b.png}{0.9\textwidth}
+
+% ================= 3. 课后练习 =================
+\section{课后练习（10 个实例）}
+
+课后练习共完成 10 个实例，全部在 Ubuntu 虚拟机的终端中实际操作完成。
+
+\subsection{实例 1：ls 的 -l 长格式}
+\textbf{题目：}运行 \texttt{ls -l} 查看当前目录的长格式列表，观察输出每一行前
+10 个字符的含义——第 1 个字符是文件类型（\texttt{d} 表示目录），随后 9 个字符
+是 owner / group / other 三组的 \texttt{rwx} 权限位。
+
+\shot{实例 1：ls -l 长格式输出}{report_imgs/n01.png}{0.9\textwidth}
+
+\subsection{实例 2：ls -lh 人性化显示文件大小}
+\textbf{题目：}运行 \texttt{ls -lh /}，用 K/M/G 等单位人性化显示文件大小，并
+观察根目录下各目录的权限位。
+
+\shot{实例 2：ls -lh / 的输出}{report_imgs/n02.png}{0.9\textwidth}
+
+\subsection{实例 3：man ls 查看命令手册}
+\textbf{题目：}运行 \texttt{man ls} 查看 \texttt{ls} 的完整选项说明，了解
+\texttt{-a}、\texttt{-l}、\texttt{-h} 等常用选项的含义，按 \texttt{q} 退出手册。
+
+\shot{实例 3：man ls 手册页}{report_imgs/n03.png}{0.9\textwidth}
+
+\subsection{实例 4：glob 通配符}
+\textbf{题目：}在 \texttt{globtest} 目录中创建 9 个测试文件
+\texttt{file1.txt file2.txt fileA.txt fileB.txt note.txt script.sh a.txt b.txt c.txt}，
+分别用 \texttt{*  ?  [12]  \{a,b,c\}} 等模式匹配。
+
+\shot{实例 4：各通配符的匹配结果}{report_imgs/n04.png}{0.9\textwidth}
+
+\subsection{实例 5：单引号 / 双引号 / ANSI-C 引号}
+\textbf{题目：}用 \texttt{echo} 对比单引号（\texttt{\$HOME} 不展开）、双引号
+（\texttt{\$HOME} 展开为实际路径）、ANSI-C 引号 \texttt{\$'...'}（解析
+\texttt{\textbackslash n} 等转义）三者的区别。
+
+\shot{实例 5：三种引号的输出对比}{report_imgs/n05.png}{0.9\textwidth}
+
+\subsection{实例 6：用 vim 编写并运行 check.sh}
+\textbf{题目：}用 vim 编写 \texttt{check.sh}，用 \texttt{[ -f ... ]}（即
+\texttt{test -f}）判断传入的文件是否存在，并分别对不存在的 \texttt{somefile}
+和存在的 \texttt{/etc/passwd} 运行脚本。
+
+\shot{实例 6：check.sh 的运行结果}{report_imgs/n06.png}{0.9\textwidth}
+
+\subsection{实例 7：chmod +x 赋予执行权限}
+\textbf{题目：}先不带执行权限运行 \texttt{./check.sh}，观察 ``权限不够'' 的报错，
+再用 \texttt{chmod +x} 赋予执行权限后重新运行，对比前后权限位的变化。
+
+\shot{实例 7：chmod +x 前后对比}{report_imgs/n07.png}{0.9\textwidth}
+
+\subsection{实例 8：stdout / stderr 重定向}
+\textbf{题目：}运行 \texttt{ls /nonexistent /tmp}（既有报错又有正常输出），
+分别用 \texttt{1>out.txt 2>err.txt} 把 stdout 与 stderr 重定向到不同文件，
+再用 \texttt{cat} 查看两个文件的内容，理解标准输出与标准错误的区别。
+
+\shot{实例 8：stdout 与 stderr 分开重定向}{report_imgs/n08.png}{0.9\textwidth}
+
+\subsection{实例 9：\$? 与 \&\&、|| 条件执行}
+\textbf{题目：}用 \texttt{echo \$?} 查看上一条命令的退出码，用
+\texttt{true \&\& echo ...} 与 \texttt{false || echo ...} 演示 \&\& 与 ||
+的短路执行逻辑。
+
+\shot{实例 9：\$? 与短路执行的输出}{report_imgs/n09.png}{0.9\textwidth}
+
+\subsection{实例 10：带日期的备份文件}
+\textbf{题目：}先创建 \texttt{notes.txt}，再用
+\texttt{cp notes.txt notes\_\$(date +\%Y-\%m-\%d).txt}，利用命令替换
+\texttt{\$(...)} 生成带当天日期（2026-09-01）的备份文件。
+
+\shot{实例 10：带日期备份的运行结果}{report_imgs/n10.png}{0.9\textwidth}
+
+% ================= 4. 解题感悟 =================
+\section{解题感悟}
+% 【重要：下面这段是基于你实际经历拟的草稿，提交前务必改成你自己的话，
+%   尤其要加入你自己真实卡住的具体细节，比如"输错公钥""合并冲突"哪个最让你头疼。】
+
+这一周之前我几乎没在命令行里做过事，对 Git 和 LaTeX 也只是听过名字。做练习时我最大的感受就是
+``什么都要查、什么都会报错''——配置 SSH 时输错公钥、git 推送路径不对、合并分支时撞上冲突，
+几乎没有一步是一次成功的。
+
+但这些报错反而让我慢慢理解了每个命令在干什么。做完 4 个课上题加 10 个课后实例，我现在能独立做
+几件事：用 shell 命令管理文件、用管道处理文本、用 git 按题增量提交并解决一次合并冲突、用 LaTeX
+编译出带交叉引用的 PDF。
+
+我最大的收获不是一个具体命令，而是学会了``报错先读错误信息、再一条条定位''。以前我一看报错就想
+放弃，现在会从第一行猜问题在哪。虽然离熟练还很远，但不再像一开始那样完全无从下手了。
+
+\end{document}
