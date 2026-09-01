@@ -1,0 +1,11 @@
+# 运行 demo.sh 生成的临时产物（源码已提交，产物无需入库）
+e04-ls-permissions/normal.txt
+e04-ls-permissions/script.sh
+e04-ls-permissions/secret.txt
+e05-glob/files/
+e07-redirection/stdout.txt
+e07-redirection/stderr.txt
+e07-redirection/all.txt
+e07-redirection/存在的文件.txt
+e09-backup-date/data.txt
+e09-backup-date/*.bak
