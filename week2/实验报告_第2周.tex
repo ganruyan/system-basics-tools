@@ -1,0 +1,180 @@
+\documentclass[UTF8]{ctexart}
+
+\usepackage[margin=2.4cm]{geometry}
+\usepackage{amsmath, amssymb}
+\usepackage{listings}
+\usepackage{xcolor}
+\usepackage{enumitem}
+
+\definecolor{codebg}{HTML}{F7F7F7}
+\lstset{
+  basicstyle=\ttfamily\small,
+  columns=fullflexible,
+  keepspaces=true,
+  breaklines=true,
+  frame=single,
+  framerule=0.3pt,
+  rulecolor=\color{gray!45},
+  numbers=left,
+  numberstyle=\tiny\color{gray},
+  xleftmargin=2.2em,
+  framexleftmargin=0.6em,
+  commentstyle=\color{gray!55},
+  keywordstyle=\color{blue!75!black}\bfseries,
+  stringstyle=\color{red!70!black},
+  showstringspaces=false,
+  tabsize=2,
+  backgroundcolor=\color{codebg},
+}
+
+\newcommand{\cmd}[1]{\texttt{#1}}
+
+\title{\bfseries 系统开发工具基础 · 实验报告（第 2 周）}
+\author{姓名：甘如嫣\quad 学号：25090032014}
+\date{2026 年 8 月 31 日（周一，第 5--8 节）}
+
+\begin{document}
+\maketitle
+
+\noindent\textbf{授课内容：} 命令行环境；开发环境与工具；Debugging and Profiling。
+
+\setlist[itemize]{itemsep=2pt, topsep=3pt, leftmargin=2em}
+
+\section{第 5 题\quad 控制一个可清理的后台任务}
+
+\textbf{主题：} 命令行环境：进程、信号与任务控制 \qquad \textbf{建议用时：} 12--15 分钟
+
+\textbf{实验目的：} 掌握前台/后台任务切换、挂起（\cmd{Ctrl-Z}）、\cmd{jobs}/\cmd{bg} 任务控制，以及用信号优雅终止可清理的任务。
+
+\textbf{实验步骤：} 将给定脚本保存为 \cmd{q05/worker.sh} 后执行：
+
+\begin{lstlisting}[language=bash]
+cd q05
+chmod +x worker.sh
+./worker.sh > stdout.log 2> stderr.log    # 前台启动，stdout/stderr 分开重定向
+# 按 Ctrl-Z 挂起前台任务
+bg                                         # 放入后台继续运行
+jobs                                       # 确认状态：[1]+ Running ...
+PID=$(jobs -p)                             # 取得 PID（不手抄）
+kill -TERM "$PID"                          # 发送 SIGTERM
+wait "$PID" 2>/dev/null                    # 等待任务结束
+cat cleanup.log                            # 应出现 CLEAN_EXIT
+\end{lstlisting}
+
+\textbf{实验结果：} \cmd{jobs} 显示任务处于 \cmd{Running} 状态；发送 \cmd{SIGTERM} 后任务退出，\cmd{cleanup.log} 中出现 \cmd{CLEAN\_EXIT}；全程未使用 \cmd{kill -9}。
+
+\textbf{说明：} 脚本顶部的 \cmd{trap '...' TERM INT} 捕获终止信号，先写入 \cmd{cleanup.log} 再 \cmd{exit 0}，实现优雅退出。\cmd{jobs -p} 直接返回任务 PID，避免手工抄写带来的误差。
+
+\section{第 6 题\quad 语义重构与本地开发反馈}
+
+\textbf{主题：} 开发环境与工具 \qquad \textbf{建议用时：} 12--15 分钟
+
+\textbf{实验目的：} 使用编辑器的 Python 语言服务器完成跳转、查找引用与符号重命名，并用 \cmd{ruff} 与 \cmd{pytest} 获得本地反馈。
+
+\textbf{实验步骤：}
+\begin{enumerate}[itemsep=2pt, topsep=3pt]
+  \item 在 \cmd{q06} 中按题目创建 \cmd{math\_utils.py}、\cmd{app.py}、\cmd{test\_math\_utils.py} 三个文件。
+  \item 在课程环境中打开 \cmd{q06}，启用 Python 语言服务器。
+  \item 对 \cmd{total\_price} 分别执行\textbf{跳转到定义}与\textbf{查找引用}。
+  \item 使用\textbf{重命名符号}把 \cmd{total\_price} 改为 \cmd{calculate\_total}，定义与两处引用同步更新。
+  \item 在 \cmd{app.py} 中临时加入未使用的 \cmd{import os}，用 \cmd{ruff} 检测并删除该行。
+  \item 运行 \cmd{ruff check} 与 \cmd{pytest}，保证全部通过。
+\end{enumerate}
+
+\textbf{重命名后的代码：}
+
+\begin{lstlisting}[language=Python]
+# math_utils.py
+def calculate_total(price: float, count: int) -> float:
+    return price * count
+\end{lstlisting}
+
+\begin{lstlisting}[language=Python]
+# app.py
+from math_utils import calculate_total
+print(calculate_total(12.5, 4))
+\end{lstlisting}
+
+\begin{lstlisting}[language=Python]
+# test_math_utils.py
+from math_utils import calculate_total
+def test_total_price():
+    assert calculate_total(12.5, 4) == 50.0
+\end{lstlisting}
+
+\textbf{实验结果：} \cmd{ruff check} 无告警；\cmd{pytest} 输出 \cmd{1 passed}。
+
+\textbf{说明：} 符号重命名是语义级重构，由语言服务器统一改写定义与所有引用，避免手工遗漏。未使用的导入由 \cmd{ruff}（基于 AST 的 linter）发现并删除，保持代码整洁。
+
+\section{第 7 题\quad 用调试器定位归并排序缺陷}
+
+\textbf{主题：} Debugging \qquad \textbf{建议用时：} 12--15 分钟
+
+\textbf{实验目的：} 使用调试器（\cmd{pdb}）定位并修复归并排序中的下标缺陷，并补充测试保证正确性。
+
+\textbf{实验步骤：}
+\begin{enumerate}[itemsep=2pt, topsep=3pt]
+  \item 将缺陷代码保存为 \cmd{q07/merge\_sort.py} 并运行，输出 \cmd{[1, 5, 4, 3, 4, 5, 6, 9]}，与正确的 \cmd{[1, 1, 2, 3, 4, 5, 6, 9]} 不符。
+  \item \cmd{python -m pdb merge\_sort.py}，执行 \cmd{break merge} 在 \cmd{merge} 函数设断点，用 \cmd{next} 单步，\cmd{p i}、\cmd{p j}、\cmd{p left[i]}、\cmd{p right[j]} 观察变量。
+  \item 定位缺陷：\cmd{else} 分支误用 \cmd{right[i]}，应为 \cmd{right[j]}。
+  \item 完成最小修复（不替换为 \cmd{sorted}）。
+\end{enumerate}
+
+\textbf{缺陷位置与修复：}
+
+\begin{lstlisting}[language=Python]
+while i < len(left) and j < len(right):
+    if left[i] <= right[j]:
+        result.append(left[i]); i += 1
+    else:
+        result.append(right[j]); j += 1   # 原为 right[i]，已修复
+\end{lstlisting}
+
+\textbf{补充测试：}
+
+\begin{lstlisting}[language=Python]
+# test_merge_sort.py
+from merge_sort import merge_sort
+def test_given():
+    assert merge_sort([3,1,4,1,5,9,2,6]) == [1,1,2,3,4,5,6,9]
+def test_duplicates():
+    assert merge_sort([4,2,4,2,1,1]) == [1,1,2,2,4,4]
+\end{lstlisting}
+
+\textbf{实验结果：} \cmd{pytest} 输出 \cmd{2 passed}；未使用 \cmd{sorted} 替换归并排序。
+
+\textbf{说明：} \cmd{else} 分支对应``取右侧较小元素''，其下标应为右侧指针 \cmd{j}；误用 \cmd{i} 既可能越界，也会产生错误结果。
+
+\section{第 8 题\quad 先测量，再优化慢速词频程序}
+
+\textbf{主题：} Profiling \qquad \textbf{建议用时：} 12--15 分钟
+
+\textbf{实验目的：} 用 \cmd{time} 与 \cmd{cProfile} 先测量、定位瓶颈，再对故意低效的去重程序做优化，并量化加速效果。
+
+\textbf{实验步骤：}
+
+\begin{lstlisting}[language=bash]
+cd q08
+python generate_words.py                         # 生成 words.txt（可重复）
+time python wordfreq.py                          # 运行 2 次并记录耗时
+time python wordfreq.py
+python -m cProfile -s cumulative wordfreq.py     # 定位耗时函数/行
+\end{lstlisting}
+
+\textbf{定位结果：} 主要耗时集中在 \cmd{if word not in unique}——在列表 \cmd{unique} 上线性查找，整体复杂度为 $O(n^2)$。
+
+\textbf{优化（用集合做 $O(1)$ 判重）：}
+
+\begin{lstlisting}[language=Python]
+words = open("words.txt", encoding="utf-8").read().split()
+unique = set()
+for word in words:
+    unique.add(word)
+print("count=", len(unique))
+\end{lstlisting}
+
+\textbf{实验结果：} 优化前后 \cmd{count} 均为 $1000$（未写死）；用相同输入再运行 2 次，分别取耗时\textbf{中位数}，计算加速比（优化前中位数 $\div$ 优化后中位数，通常在十倍以上）。
+
+\textbf{说明：} \cmd{cProfile -s cumulative} 按累计耗时排序，直接暴露热点。优化以集合替换列表去重，保持最终 \cmd{count} 不变，符合``先测量、再优化''的方法。
+
+\end{document}
