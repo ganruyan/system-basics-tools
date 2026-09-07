@@ -6,3 +6,8 @@
 __pycache__/
 *.pyc
 .DS_Store
+
+# IDE 和缓存
+.idea/
+.pytest_cache/
+.ruff_cache/
