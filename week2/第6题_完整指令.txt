@@ -1,0 +1,109 @@
+第 6 题：语义重构与本地开发反馈 —— PyCharm 完整步骤
+（全部在 PyCharm 里操作，界面按中文版写的）
+
+═══════════════════════════════════════
+【准备】新建项目
+═══════════════════════════════════════
+1. 打开 PyCharm，点「文件」菜单 →「新建项目」（New Project）
+2. 「名称/位置」填：C:\Users\ganru\Desktop\q06
+3. 重要：「解释器类型」选「系统解释器」（不要选「项目 venv」）
+   然后下面「解释器」选 Python 3.13
+4. 点右下角「创建」（Create）
+
+   ✅ 截图点 1：这个「新建项目」窗口（能看出选了系统解释器 Python 3.13）
+      或者创建完后截图右下角显示的 Python 版本
+
+   （如果之前已经用别的方式建过 q06 文件夹，就用「文件」→「打开」选那个文件夹）
+
+═══════════════════════════════════════
+【1】确认解释器（如果上面已经选对，跳过）
+═══════════════════════════════════════
+5. 顶部菜单：文件 → 设置（快捷键 Ctrl+Alt+S）
+6. 左侧树里展开「项目：q06」→ 点「Python 解释器」
+7. 右上角的下拉框，选带 3.13 的那个（例如 Python 3.13 (python)）
+   如果下拉里没有：点右边的齿轮图标 →「添加解释器」→ 选「系统解释器」
+   → 找到 C:\Users\ganru\AppData\Local\Programs\Python 里面的 python.exe → 确定
+
+═══════════════════════════════════════
+【2】新建三个文件
+═══════════════════════════════════════
+8. 左侧「项目」面板里，右键 q06 文件夹 → 新建 → Python 文件
+   名字填 math_utils，回车，然后把下面整段粘贴进去：
+
+def total_price(price: float, count: int) -> float:
+    return price * count
+
+9. 同样方法再建 app.py，粘贴：
+
+from math_utils import total_price
+
+print(total_price(12.5, 4))
+
+10. 同样方法再建 test_math_utils.py，粘贴：
+
+from math_utils import total_price
+
+
+def test_total_price():
+    assert total_price(12.5, 4) == 50.0
+
+   ✅ 截图点 2：左侧「项目」面板，能同时看到 math_utils.py / app.py / test_math_utils.py 三个文件
+
+═══════════════════════════════════════
+【3】跳转到定义（total_price 在哪里？）
+═══════════════════════════════════════
+11. 双击打开 app.py。里面一共有两处写了 total_price：
+      · 第 1 行：from math_utils import total_price
+      · 第 3 行：print(total_price(12.5, 4))
+    把鼠标光标点在第 3 行 print(...) 里面那个 total_price 中间。
+12. 按住 Ctrl 键，鼠标左键点一下这个 total_price（或直接按 Ctrl+B）。
+    它会自动跳到 math_utils.py 里 def total_price(...) 那一行，说明跳转成功。
+
+   ✅ 截图点 3：跳转后 math_utils.py 里 def total_price 这一行打开的样子
+
+═══════════════════════════════════════
+【4】查找引用
+═══════════════════════════════════════
+13. 光标仍放在 total_price 上，按 Alt+F7（或菜单：编辑 → 查找用法）
+    下方会弹出「查找」结果面板，列出 total_price 出现在哪些文件、哪些行。
+
+   ✅ 截图点 4：这个「查找」结果面板
+
+═══════════════════════════════════════
+【5】重命名符号
+═══════════════════════════════════════
+14. 光标放在 total_price 上，按 Shift+F6（或菜单：重构 → 重命名）
+    输入新名字 calculate_total，回车。
+    三个文件里的 total_price 会全部自动改成 calculate_total。
+
+   ✅ 截图点 5：重命名后，某个文件里已经变成 calculate_total 的样子
+     （改完后三个文件内容仍然是配套的，可以直接留成 calculate_total）
+
+═══════════════════════════════════════
+【6】用 ruff 和 pytest 跑开发反馈（PyCharm 内置终端）
+═══════════════════════════════════════
+15. 底部打开终端：菜单 视图 → 工具窗口 → 终端（或快捷键 Alt+F12）
+16. 在 app.py 第 1 行上面加一行 import os（PyCharm 默认自动保存，不用手动存）
+17. 在终端里敲：ruff check
+    会提示 os 未使用，这是正常的，题目就是要这个效果。
+
+   ✅ 截图点 6：ruff check 报「os 未使用」的输出
+
+18. 把 app.py 里刚加的 import os 删掉
+19. 终端里再敲：ruff check
+    这次干净通过、没有报错。
+20. 终端里敲：pytest
+    应该显示 1 passed。
+
+   ✅ 截图点 7：pytest 显示 1 passed 的输出
+
+═══════════════════════════════════════
+总共 7 个截图点：
+ 1 解释器设置 / 右下角 Python 版本
+ 2 三个文件建好的项目面板
+ 3 Ctrl+B 跳转到定义
+ 4 Alt+F7 查找引用结果
+ 5 Shift+F6 重命名后
+ 6 ruff check 报 os 未使用
+ 7 pytest 显示 1 passed
+（截图用 Windows 自带：Win+Shift+S 框选）

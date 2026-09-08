@@ -1,0 +1,146 @@
+第 8 题：先测量，再优化慢速词频程序 —— 完整步骤
+（在 PyCharm 里操作，界面按中文版写；计时用 Windows 的 Measure-Command 代替 Linux 的 time）
+
+───────────────────────────────────────────────
+【准备】新建项目 q08
+───────────────────────────────────────────────
+1. 打开 PyCharm，点「文件」→「新建项目」（New Project）
+2. 「名称/位置」填：C:\Users\ganru\Desktop\q08
+3. 「解释器类型」选「系统解释器」（不要选「项目 venv」），解释器选 Python 3.13
+4. 点右下角「创建」
+
+───────────────────────────────────────────────
+【第 1 步】生成 words.txt
+───────────────────────────────────────────────
+5. 左侧「项目」面板，右键 q08 → 新建 → Python 文件，名字填 generate_words，回车
+6. 把下面整段粘进去（注意 f.write 前面要缩进 4 个空格）：
+
+import random
+random.seed(20260831)
+vocab = [f"w{i}" for i in range(1000)]
+with open("words.txt", "w", encoding="utf-8") as f:
+    f.write(" ".join(random.choice(vocab) for _ in range(30000)))
+
+7. 运行：右键编辑器空白处 →「运行 'generate_words'」（或 Shift+F10）
+   运行完，左侧「项目」面板里会出现一个 words.txt 文件。
+
+   ✅ 截图点 1：运行后，左侧「项目」面板里能看到 words.txt 文件
+
+───────────────────────────────────────────────
+【第 2 步】新建原始（低效）wordfreq.py，跑一遍看结果
+───────────────────────────────────────────────
+8. 右键 q08 → 新建 → Python 文件，名字填 wordfreq，回车，粘贴：
+
+words = open("words.txt", encoding="utf-8").read().split()
+unique = []
+for word in words:
+    if word not in unique:
+        unique.append(word)
+print("count=", len(unique))
+
+9. 运行 wordfreq.py（右键 →「运行 'wordfreq'」），下方运行窗口输出：
+
+count= 1000
+
+   记住这个数字 1000，优化后必须还是 1000（但代码里不能写死 1000）。
+
+   ✅ 截图点 2：运行窗口输出 count= 1000
+
+───────────────────────────────────────────────
+【第 3 步】计时 2 次（原程序）
+───────────────────────────────────────────────
+10. 打开底部终端：菜单 视图 → 工具窗口 → 终端（快捷键 Alt+F12）
+11. 在终端里敲（这是 Windows 版的 time，效果=给程序计时）：
+
+Measure-Command { python wordfreq.py }
+
+    敲完会先打印 count= 1000，然后打印一个时间表格，看最后一行 TotalSeconds
+    （例如 TotalSeconds : 3.482 就表示约 3.48 秒）。把这个数记下来，叫 t1。
+
+12. 再敲一遍同一句，得到第二个时间 t2。
+
+13. 算原始程序的中位数：中位数 = (t1 + t2) / 2
+    （跑 2 次取中间，2 个数的话就是求平均）
+
+   ✅ 截图点 3：两次 Measure-Command 的结果（能看到两个 TotalSeconds 值）
+
+   ※ 如果终端提示「Measure-Command 不是内部或外部命令」，
+     说明你的终端是 cmd 而不是 PowerShell，改用下面这句计时（任何终端都能用）：
+
+python -c "import time,subprocess,sys; t=time.perf_counter(); subprocess.run([sys.executable,'wordfreq.py']); print('耗时 = %.3f 秒' % (time.perf_counter()-t))"
+
+───────────────────────────────────────────────
+【第 4 步】用 cProfile 找出主要耗时位置
+───────────────────────────────────────────────
+14. 在终端里敲：
+
+python -m cProfile -s cumulative wordfreq.py
+
+    先会打印 count= 1000，然后打印一张函数耗时表，表头类似：
+      ncalls  tottime  percall  cumtime  percall  filename:lineno(function)
+    因为加了 -s cumulative，表按 cumtime（累计时间）从大到小排。
+
+15. 看表里排第一的那一行：几乎肯定是 wordfreq.py 的 <module>，它的 cumtime
+    占了总时间的绝大部分。结合代码，主要耗时就在第 3~5 行的 for 循环里、
+    第 4 行的 word not in unique —— 因为 unique 是 list，word not in unique
+    是「从头到尾线性查找」，整体是 O(n²)，所以慢。
+
+   这就是你要在报告里写出的「主要耗时位置」。
+
+   ✅ 截图点 4：cProfile 输出的这张表（能看到 cumtime 列、wordfreq.py 那行占大头）
+
+───────────────────────────────────────────────
+【第 5 步】优化（list 改成 set），确认 count 不变
+───────────────────────────────────────────────
+16. 改 wordfreq.py，只改两处：
+       unique = []        →  unique = set()
+       unique.append(word) →  unique.add(word)
+    改完变成：
+
+words = open("words.txt", encoding="utf-8").read().split()
+unique = set()
+for word in words:
+    if word not in unique:
+        unique.add(word)
+print("count=", len(unique))
+
+    说明：set 的 word not in unique 是 O(1) 哈希查找，整体从 O(n²) 降到 O(n)。
+    count 结果不变（还是 1000），而且代码里没有写死 1000，满足题目要求。
+
+17. 再运行 wordfreq.py，确认输出仍是 count= 1000。
+
+   ✅ 截图点 5：优化后的 wordfreq.py 代码（或运行后仍输出 count= 1000）
+
+───────────────────────────────────────────────
+【第 6 步】优化后再计时 2 次，算加速比
+───────────────────────────────────────────────
+18. 在终端里再敲两次：
+
+Measure-Command { python wordfreq.py }
+
+    得到两个时间 t3、t4，优化后中位数 = (t3 + t4) / 2。
+
+19. 算加速比：加速比 = 原始中位数 / 优化后中位数
+    例如：原始中位数 3.5 秒，优化后 0.035 秒，加速比 = 3.5 / 0.035 = 100 倍。
+    （你的实际数字可能不同，用自己记录的真实时间算。）
+
+   ✅ 截图点 6：优化后两次计时 + 你算出的加速比（可以把计算过程记在纸上或记事本一起截）
+
+───────────────────────────────────────────────
+总共 6 个截图点：
+ 1 生成后项目里能看到 words.txt
+ 2 原始 wordfreq.py 输出 count= 1000
+ 3 原程序两次计时（两个 TotalSeconds）
+ 4 cProfile -s cumulative 输出表（主要耗时位置）
+ 5 优化后的代码 / 运行仍输出 count= 1000
+ 6 优化后两次计时 + 加速比计算
+
+───────────────────────────────────────────────
+【附】如果你改在 Ubuntu 虚拟机里做这题：
+   把「计时命令」从 Measure-Command 换成 time 即可，其余步骤完全一样：
+
+   time python3 wordfreq.py
+   python3 -m cProfile -s cumulative wordfreq.py
+
+   time 输出最后一行「real 0m3.482s」里的 3.482 就是秒数（t1、t2…）。
+（截图用 Windows 自带：Win+Shift+S 框选）
