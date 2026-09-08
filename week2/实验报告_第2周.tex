@@ -54,7 +54,7 @@
 % ===================================================================
 \section{GitHub 仓库与提交记录}
 
-本次课程的\textbf{报告、练习、代码}均已上传至个人 GitHub 仓库，采用\textbf{增量提交}（分多次 commit，禁止单次全量提交）：
+本次课程的\textbf{报告、练习、代码}均已上传至个人 GitHub 仓库，采用\textbf{增量提交}（分多次 commit）：
 
 \begin{center}
 \url{https://github.com/ganruyan/system-basics-tools}
@@ -75,7 +75,7 @@ f761316 补充截图和解题感悟
 7fa9247 补充实例 1、7、9 截图
 \end{lstlisting}
 
-每次提交只针对一个逻辑单元（一个题、一份报告或一项配置），保留了清晰的提交历史，便于追踪与回滚。GitHub 上的 commit 记录截图如下：
+GitHub 上的 commit 记录截图如下：
 
 \begin{figure}[H]\centering
   \includegraphics[width=\linewidth]{figs/commit_records.png}
@@ -108,7 +108,7 @@ cat cleanup.log                            # 应出现 CLEAN_EXIT
 
 \shot{q05_signal.png}{第 5 题：\cmd{worker.sh} 启动、\cmd{bg}/\cmd{jobs} 任务控制与 \cmd{CLEAN\_EXIT} 输出}
 
-\textbf{说明：} 脚本顶部的 \cmd{trap '...' TERM INT} 捕获终止信号，先写入 \cmd{cleanup.log} 再 \cmd{exit 0}，实现优雅退出。\cmd{jobs -p} 直接返回任务 PID，避免手工抄写带来的误差。补充练习中还通过 \cmd{sleep 10000} 配合 \cmd{pgrep}/\cmd{pkill} 验证了按名称查找并终止后台任务：
+\textbf{说明：} 脚本顶部的 \cmd{trap '...' TERM INT} 捕获终止信号，先写入 \cmd{cleanup.log} 再 \cmd{exit 0}，实现优雅退出。\cmd{jobs -p} 直接返回任务 PID。补充练习中还通过 \cmd{sleep 10000} 配合 \cmd{pgrep}/\cmd{pkill} 验证了按名称查找并终止后台任务：
 
 \shot{q05_signal2.png}{补充：\cmd{sleep 10000} 后台任务 + \cmd{bg}/\cmd{jobs}/\cmd{pgrep}/\cmd{pkill} 控制}
 
@@ -270,7 +270,6 @@ print("count=", len(unique))
 % ===================================================================
 \section{课后练习：十一个实例}
 
-本次课后练习共完成 $11$ 个实例（$>10$），覆盖参数与 Globs、IDE/语言服务器、LLM 辅助调试、进程与端口、基准测试与系统监控等主题。
 
 \subsection{实例 1\quad ls 组合选项（参数与 Globs）}
 
