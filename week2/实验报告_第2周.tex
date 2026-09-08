@@ -280,7 +280,9 @@ ls -laht --color=auto
 
 各选项含义：\cmd{-l} 长格式（权限/大小/时间/名字）、\cmd{-a} 包含隐藏文件、\cmd{-h} 大小易读（\cmd{1.1M}、\cmd{106M} 而非纯字节）、\cmd{-t} 按最近修改时间排序、\cmd{--color=auto} 带颜色输出。
 
-\textbf{结果：} 一次输出即可同时看到所有文件（含隐藏）、易读的大小、按时间倒序排列并着色。% TODO: 补截图
+\textbf{结果：} 一次输出即可同时看到所有文件（含隐藏）、易读的大小、按时间倒序排列并着色。
+
+\shot{inst01_ls.png}{实例 1：\cmd{ls -laht --color=auto} 一次输出展示隐藏文件、易读大小、按时间倒序}
 
 \subsection{实例 2\quad 语言服务器：对库依赖跳转到定义}
 
@@ -358,7 +360,9 @@ ls -la               # 能看到 -myfile
 rm ./-myfile         # 用 ./ 前缀删除以 - 开头的文件
 \end{lstlisting}
 
-\textbf{结果：} \cmd{--} 让 \cmd{touch} 把 \cmd{-myfile} 当作普通文件名创建；删除时以 \cmd{./-myfile} 形式避免被解析为选项。% TODO: 补截图
+\textbf{结果：} \cmd{--} 让 \cmd{touch} 把 \cmd{-myfile} 当作普通文件名创建；删除时以 \cmd{./-myfile} 形式避免被解析为选项。
+
+\shot{inst07_touch.png}{实例 7：\cmd{touch -- -myfile} 创建、\cmd{ls -la} 查看、\cmd{rm ./-myfile} 删除}
 
 \subsection{实例 8\quad 用 strace 跟踪系统调用}
 
@@ -381,7 +385,9 @@ strace ls -l
 diff <(printenv | sort) <(export | sort)
 \end{lstlisting}
 
-\textbf{结果：} 两个命令输出格式不同——\cmd{printenv} 输出 \cmd{NAME=value}，而 \cmd{export} 输出 \cmd{declare -x NAME="value"}，因此 \cmd{diff} 显示大量差异；但变量集合本质相同，只是格式不同。% TODO: 补截图
+\textbf{结果：} 两个命令输出格式不同——\cmd{printenv} 输出 \cmd{NAME=value}，而 \cmd{export} 输出 \cmd{declare -x NAME="value"}，因此 \cmd{diff} 显示大量差异；但变量集合本质相同，只是格式不同。
+
+\shot{inst09_procsub.png}{实例 9：进程替换 \cmd{diff <(printenv | sort) <(export | sort)} 显示两者格式差异}
 
 \subsection{实例 10\quad 用 hyperfine 基准对比两个实现}
 
