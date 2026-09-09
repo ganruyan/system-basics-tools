@@ -1,0 +1,342 @@
+% !TeX program = xelatex
+% ============================================================
+% 系统开发工具基础 · 实验报告（第三周）
+% 学号 25090032014  甘如嫣
+%
+% 注意：老师要求「每个人设计自己的模板」。
+%       下面这套排版（配色 / 页眉页脚 / 代码样式）可自行调整，
+%       换成你自己喜欢的配色和字体，它才真正算"你的模板"。
+% ============================================================
+\documentclass[12pt,a4paper]{ctexart}
+
+% ---------- 页面与包 ----------
+\usepackage[margin=2.2cm]{geometry}
+\usepackage{graphicx}
+\usepackage{listings}
+\usepackage{xcolor}
+\usepackage{enumitem}
+\usepackage{booktabs}
+\usepackage{amsmath}
+\usepackage[hidelinks]{hyperref}
+\usepackage{fancyhdr}
+\usepackage{float}
+
+% ---------- 主题色（改成你喜欢的颜色） ----------
+\definecolor{theme}{RGB}{40,80,140}
+
+% ---------- 页眉页脚 ----------
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{\small\color{theme}系统开发工具基础 · 实验报告}
+\fancyhead[R]{\small 甘如嫣}
+\fancyfoot[C]{\small\thepage}
+\renewcommand{\headrule}{\color{theme}\rule{\headwidth}{0.4pt}}
+
+% ---------- 代码块样式 ----------
+\lstset{
+  basicstyle=\ttfamily\small,
+  breaklines=true,
+  frame=single,
+  backgroundcolor=\color{gray!8},
+  keywordstyle=\color{blue!70!black},
+  commentstyle=\color{green!45!black},
+  showstringspaces=false,
+  columns=fullflexible,
+}
+
+% ---------- 截图快捷命令 ----------
+% \shot{图注}{图片相对路径}{宽度}
+\newcommand{\shot}[3]{\begin{figure}[H]\centering\includegraphics[width=#3]{#2}\caption{#1}\end{figure}}
+
+\begin{document}
+
+% ============================================================
+% 封面
+% ============================================================
+\begin{titlepage}
+\centering
+\vspace*{3cm}
+{\Huge\bfseries\color{theme} 实验报告\par}
+\vspace{0.8cm}
+{\LARGE 系统开发工具基础（第三周）\par}
+\vspace{2.5cm}
+\begin{tabular}{rl}
+\textbf{姓名} & 甘如嫣 \\
+\textbf{学号} & 25090032014 \\
+\textbf{日期} & \today \\
+\end{tabular}
+\vfill
+\end{titlepage}
+
+\tableofcontents
+\newpage
+
+% ============================================================
+\section{GitHub 仓库与提交记录}
+
+\subsection{仓库链接}
+仓库地址：\url{https://github.com/ganruyan/system-basics-tools}
+
+\subsection{提交记录}
+本仓库按题、按实例增量提交（非单次全量提交）。本周（第三周）共提交 \textbf{17} 次 commit，
+覆盖第 9～12 题、实例 1～11 及解题感悟，每次提交只针对一个逻辑单元，保留清晰的提交历史。
+
+\shot{GitHub 提交记录（第三周增量提交）}{figs/commit_records.png}{0.92\textwidth}
+
+% ============================================================
+\section{课上给助教检查的内容与结果}
+
+【本节写你上课时给助教检查的内容和结果：例如课堂演示、小测、口头回答、
+  助教记录的检查情况等。这部分必须是你自己的真实课堂记录，请自行补充。】
+
+% ============================================================
+\section{课后练习（>10 个实例）}
+
+本周共完成 \textbf{4 道题目}（第 9～12 题）与 \textbf{11 个实例}（实例 1～11），
+合计 15 项，满足「每次课完成 >10 个实例」的要求。下面每项先放题目原文，再放运行结果截图。
+
+% ============ 题目 9 ============
+\subsection{题目 9\quad 从源码构建并在干净环境安装 Wheel}
+
+\textbf{主题：}Packaging and Shipping Code\quad\textbf{建议用时：}12—15 分钟
+
+\textbf{题目原文：}在 q09 中按给定内容创建一个最小 Python 命令行包，并验证 wheel 安装。
+
+\textbf{给定内容（\texttt{src/greetlab/cli.py}）：}
+\begin{lstlisting}[language=Python]
+import argparse
+
+def main():
+    p = argparse.ArgumentParser()
+    p.add_argument("--name", required=True)
+    a = p.parse_args()
+    print(f"Hello, {a.name}!")
+\end{lstlisting}
+
+\textbf{给定内容（\texttt{pyproject.toml}）：}
+\begin{lstlisting}
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+[project]
+name = "greetlab-学号"
+version = "0.1.0"
+[project.scripts]
+sdt-greet = "greetlab.cli:main"
+\end{lstlisting}
+
+\textbf{题目要求：}
+\begin{itemize}
+  \item 创建 \texttt{src/greetlab/\_\_init\_\_.py}、给定的 \texttt{cli.py} 和 \texttt{pyproject.toml}，并把「学号」替换为自己的学号。
+  \item 在已安装 build 工具的课程环境中运行 \texttt{python -m build}，生成 wheel。
+  \item 新建一个干净虚拟环境，只从生成的 wheel 安装。
+  \item 切换到 q09 之外运行 \texttt{sdt-greet --name <学号>}，确认输出正确。
+\end{itemize}
+
+\textbf{运行结果：}
+\shot{创建包文件：pyproject.toml 与 cli.py}{figs/q09_1.png}{0.45\textwidth}
+\shot{greetlab 包目录结构}{figs/q09_2.png}{0.6\textwidth}
+\shot{python -m build 成功生成 wheel}{figs/q09_3.png}{0.85\textwidth}
+\shot{干净虚拟环境中 pip install 安装 wheel}{figs/q09_4.png}{0.6\textwidth}
+\shot{运行 sdt-greet --name 25090032014，输出正确}{figs/q09_5.png}{0.85\textwidth}
+
+% ============ 题目 10 ============
+\clearpage
+\subsection{题目 10\quad 让编程智能体进入可验证的修复循环}
+
+\textbf{主题：}智能体编程\quad\textbf{建议用时：}12—15 分钟
+
+\textbf{题目原文：}复用第 9 题的 greetlab 包，使用编程智能体完成一个小型测试驱动修复。
+
+\textbf{题目要求：}
+\begin{itemize}
+  \item 复制 q09 为 q10，添加一个失败测试：当 name 只含空白字符时，main 应以 \texttt{SystemExit(2)} 结束。
+  \item 先运行测试确认失败，再向编程智能体说明目标、约束和测试命令，要求它修改实现并运行测试。
+  \item 人工检查 diff，撤销无关修改，并再次运行测试。
+  \item 在 \texttt{ai\_log.md} 中用不超过 5 行记录核心提示、智能体改动和人工验证。
+\end{itemize}
+
+\textbf{运行结果：}
+\shot{先运行测试，确认失败（FAILED）}{figs/q10_1.png}{0.85\textwidth}
+\shot{向编程智能体说明目标与约束}{figs/q10_2.png}{0.5\textwidth}
+\shot{人工检查 diff，确认仅改动校验逻辑}{figs/q10_3.png}{0.85\textwidth}
+\shot{智能体修改后的 cli.py}{figs/q10_4.png}{0.85\textwidth}
+\shot{ai\_log.md 记录核心提示、改动与验证}{figs/q10_5.png}{0.42\textwidth}
+\shot{再次运行 pytest，1 passed}{figs/q10_6.png}{0.85\textwidth}
+
+% ============ 题目 11 ============
+\clearpage
+\subsection{题目 11\quad 把「无法处理」的协作材料改成可执行信息}
+
+\textbf{主题：}不止于代码\quad\textbf{建议用时：}12—15 分钟
+
+\textbf{题目原文：}围绕「空姓名仍输出问候语」这一缺陷，改写下面三段质量较差的协作材料。
+
+\textbf{给定内容：}
+\begin{itemize}
+  \item Issue：Windows 上运行不了，尽快修复。
+  \item 提交信息：fix bug
+  \item 评审意见：这里写得不好，重写。
+  \item 已知事实：运行 \texttt{sdt-greet --name " "} 时仍输出 \texttt{Hello, !}，并以 0 退出。
+\end{itemize}
+
+\textbf{题目要求：}
+\begin{itemize}
+  \item 在 \texttt{communication.md} 中重写 Issue，包含环境、复现命令、期望结果和实际结果；未知信息写「待确认」。
+  \item 重写提交信息：标题使用祈使语气，正文说明问题和解决方案。
+  \item 重写评审意见：指出具体行为、风险和建议动作，并标注 Blocking、Suggestion 或 Nit。
+  \item 全文控制在 400 字以内，保持专业、简洁。
+\end{itemize}
+
+\textbf{运行结果：}
+\shot{communication.md 改写后的内容}{figs/q11_1.png}{0.85\textwidth}
+
+% ============ 题目 12 ============
+\clearpage
+\subsection{题目 12\quad 修复一个可复现的线性回归训练循环}
+
+\textbf{主题：}Python 与 PyTorch\quad\textbf{建议用时：}12—15 分钟
+
+\textbf{题目原文：}将下方代码保存为 \texttt{q12/train.py}，补全 TODO 并完成一次 PyTorch CPU 训练。
+
+\textbf{给定内容：}
+\begin{lstlisting}[language=Python]
+import torch
+from torch import nn
+
+torch.manual_seed(20260907)
+x = torch.linspace(-1, 1, 101).reshape(-1, 1)
+y = 3 * x - 1
+model = nn.Linear(1, 1)
+loss_fn = nn.MSELoss()
+opt = torch.optim.SGD(model.parameters(), lr=0.1)
+
+for _ in range(200):
+    pred = model(x)
+    loss = loss_fn(pred, y)
+    # TODO：清空梯度、反向传播、更新参数
+
+    # TODO：进入评估模式并在 no_grad 中打印最终损失、weight 和 bias
+\end{lstlisting}
+
+\textbf{题目要求：}
+\begin{itemize}
+  \item 补全训练循环，正确调用 \texttt{zero\_grad}、\texttt{backward} 和 \texttt{step}。
+  \item 训练后调用 \texttt{model.eval()}，并在 \texttt{torch.no\_grad()} 中计算最终损失。
+  \item 打印最终损失、weight 和 bias；最终损失应小于 0.001。
+  \item 不得直接把 weight 和 bias 赋值为 3 和 $-1$。
+\end{itemize}
+
+\textbf{运行结果：}
+\shot{train.py 补全后运行，输出 loss / weight / bias}{figs/q12_1.png}{0.8\textwidth}
+
+% ============ 实例 1 ============
+\clearpage
+\subsection{实例 1\quad printenv 对比虚拟环境前后差异}
+
+\textbf{题目原文：}Save your environment with printenv to a file, create a venv, activate it, printenv to another file and diff before.txt after.txt. What changed in the environment? Why does the shell prefer the venv? (Hint: look at \texttt{\$PATH} before and after activation.) Run which deactivate and reason about what the deactivate bash function is doing.
+
+\textbf{运行结果：}
+\shot{printenv 导出环境变量，激活 venv 后 diff 前后差异}{figs/inst01.png}{0.55\textwidth}
+
+% ============ 实例 2 ============
+\clearpage
+\subsection{实例 2\quad 创建 Python 包并生成 lockfile}
+
+\textbf{题目原文：}Create a Python package with a pyproject.toml and install it in a virtual environment. Create a lockfile and inspect it.
+
+\textbf{运行结果：}
+\shot{创建 Python 包（pyproject.toml）}{figs/inst02_1.png}{0.85\textwidth}
+\shot{在虚拟环境安装并生成 lockfile}{figs/inst02_2.png}{0.85\textwidth}
+
+% ============ 实例 3 ============
+\clearpage
+\subsection{实例 3\quad 编写 Python 应用 Dockerfile}
+
+\textbf{题目原文：}Write a Dockerfile for a simple Python application
+
+\textbf{运行结果：}
+\shot{编写的 Python 应用 Dockerfile}{figs/inst03.png}{0.85\textwidth}
+
+% ============ 实例 4 ============
+\clearpage
+\subsection{实例 4\quad docker-compose 运行应用与 Redis 缓存}
+
+\textbf{题目原文：}Then write a docker-compose.yml that runs your application alongside a Redis cache
+
+\textbf{运行结果：}
+\shot{docker-compose.yml（应用 + Redis 缓存）}{figs/inst04.png}{0.85\textwidth}
+
+% ============ 实例 5 ============
+\clearpage
+\subsection{实例 5\quad 三种方式实现两数之和}
+
+\textbf{题目原文：}把同一个简单编程任务（选取 LeetCode 两数之和）分别用手动编码、AI 自动补全、AI 聊天对话三种方式实现，对比三者体验差异；可选尝试智能体模式。
+
+\textbf{运行结果：}
+\shot{手动编码 / AI 补全 / AI 对话三种实现两数之和}{figs/inst05.png}{0.8\textwidth}
+
+% ============ 实例 6 ============
+\clearpage
+\subsection{实例 6\quad 用 AI 生成命令处理 Markdown}
+
+\textbf{题目原文：}利用 AI 完成 Markdown 无序列表提取任务。思考 AI 直接修改文件存在什么缺点。让 AI 输出 shell 命令（grep/sed），人工手动执行命令完成文本筛选，禁止 AI 直接修改原始 md 文件。
+
+\textbf{运行结果：}
+\shot{用 AI 生成 grep/sed 命令，人工执行处理 Markdown 无序列表}{figs/inst06.png}{0.85\textwidth}
+
+% ============ 实例 7 ============
+\clearpage
+\subsection{实例 7\quad 氛围编程一个小应用}
+
+\textbf{题目原文：}从零开始氛围编程一个小应用。不要手动编写一行代码。
+
+\textbf{运行结果：}
+\shot{氛围编程生成的小应用运行结果}{figs/inst07.png}{0.5\textwidth}
+
+% ============ 实例 8 ============
+\clearpage
+\subsection{实例 8\quad 原地修改与输出新文件对比}
+
+\textbf{题目原文：}对比两种文本处理思路：直接原地修改源文件 和 先输出结果到新文件、不改动原始文件，分别简述优缺点，并说明日常处理重要文本时优先选择哪种方案。
+
+\textbf{运行结果：}
+\shot{原地修改与输出新文件两种思路对比}{figs/inst08.png}{0.85\textwidth}
+
+% ============ 实例 9 ============
+\clearpage
+\subsection{实例 9\quad YOLO 模式风险与隔离方案}
+
+\textbf{题目原文：}调研 AI 智能体 YOLO 自主模式的含义，分析该模式存在的安全风险，写出一份基于 Ubuntu 虚拟机的隔离运行方案，不需要真实搭建部署。
+
+\textbf{运行结果：}
+\shot{YOLO 自主模式含义、风险与隔离运行方案}{figs/inst09.png}{0.7\textwidth}
+
+% ============ 实例 10 ============
+\clearpage
+\subsection{实例 10\quad 查找 .py 文件并遍历脚本}
+
+\textbf{题目原文：}在家目录下，编写一条命令完成：查找当前目录下所有 \texttt{.py} 后缀文件，打印文件名称、文件权限；随后写一段简单 bash 脚本，遍历目录输出所有 Python 文件。
+
+\textbf{运行结果：}
+\shot{查找 .py 文件（名称+权限）与遍历脚本输出}{figs/inst10.png}{0.85\textwidth}
+
+% ============ 实例 11 ============
+\clearpage
+\subsection{实例 11\quad Markdown 无序列表文本流水线}
+
+\textbf{题目原文：}对 Markdown 文件进行文本流水线处理：提取无序列表、去除空白行、把开头 \texttt{- } 统一替换成 \texttt{* }，最终保存到新文件，原始文件保持不变。
+
+\textbf{运行结果：}
+\shot{Markdown 无序列表文本流水线处理结果}{figs/inst11.png}{0.85\textwidth}
+
+% ============================================================
+\section{解题感悟}
+
+这次完成实验题目，接触了 Docker 配置、Python 代码和 Linux 命令。一开始我只是照着步骤敲命令，很多地方没有深入思考。最开始只用简单 grep 提取文本，做完觉得功能很单薄，后来尝试管道组合多条命令，才感受到 Shell 处理文本的方便。
+
+手动写代码和借助工具生成代码对比下来，我发现工具虽然省事，但生成的内容需要自己检查，不能直接照搬。写配置文件的时候也注意到缩进、格式这类小细节很容易出错。实验过程里印象很深的一点，就是尽量不去改动原始文件，避免误操作弄丢数据。
+
+整体做完收获挺多，不少命令和脚本还不太熟练，之后还要多动手练习，熟悉如何组合工具解决问题。
+
+\end{document}
