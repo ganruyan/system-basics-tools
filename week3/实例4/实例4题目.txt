@@ -1,0 +1,1 @@
+Then write a docker-compose.yml that runs your application alongside a Redis cache
