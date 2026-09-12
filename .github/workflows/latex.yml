@@ -1,0 +1,31 @@
+name: 编译LaTeX实验报告
+
+on:
+  push:
+    paths:
+      - 'week4/**'
+      - '!week4/*.pdf'
+  workflow_dispatch:
+
+jobs:
+  compile:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: 编译LaTeX为PDF
+        uses: xu-cheng/latex-action@v3
+        with:
+          root_file: 实验报告_第4周.tex
+          working_directory: week4
+          args: -xelatex -interaction=nonstopmode -file-line-error
+
+      - name: 将生成的PDF提交回仓库
+        run: |
+          git config user.name "ganruyan"
+          git config user.email "179649847@qq.com"
+          git add week4/实验报告_第4周.pdf
+          git commit -m "week4: 编译实验报告PDF" || echo "无可提交内容"
+          git push
