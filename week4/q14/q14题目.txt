@@ -1,0 +1,26 @@
+第14题 让Make只重建真正受影响的产物
+主题：元编程：构建系统 建议用时：12—15分钟
+在q14中按给定内容创建三个源文件，只需完成Makefile。
+给定内容
+# data.csv
+name,value
+alpha,2
+beta,3
+gamma,5
+# stats.py
+import csv
+with open("data.csv") as f:
+total = sum(int(r["value"]) for r in csv.DictReader(f))
+open("stats.txt", "w").write(str(total))
+# build_report.py
+text = open("report.md").read()
+total = open("stats.txt").read()
+open("report.txt", "w").write(f"{text}\nTotal: {total}\n")
+# report.md
+# Data Report
+题目要求
+• 创建给定的data.csv、stats.py、build_report.py 和 report.md。
+• 编写Makefile，包含all、stats.txt、report.txt 和 clean；准确列出数据文件、脚本和中间产物依赖，并把
+all、clean 声明为.PHONY。
+• 验证首次make生成两个产物；第二次无改动时不执行配方。
+• touch data.csv 后再次make，确认stats.txt和report.txt 重新生成；clean只删除生成物。

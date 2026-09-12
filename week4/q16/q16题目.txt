@@ -1,0 +1,9 @@
+第16题 修复并交付一个陌生的小型工具仓库
+主题：课堂综合测试 建议用时：12—15分钟
+复用第13题的项目，在q16中完成一次15分钟综合检查。
+题目要求
+• 复制q13为q16并初始化/继续使用Git。
+• 把问候语实现临时改成始终返回字面量Hello,name!，运行check.sh确认测试失败；随后定位并修复。
+• 编写最小Makefile，包含check、build和clean；check调用check.sh，build生成wheel。
+• 运行makecheck和makebuild，计算wheel的SHA-256，并把最终改动提交为一个内容聚焦的Git提
+交。

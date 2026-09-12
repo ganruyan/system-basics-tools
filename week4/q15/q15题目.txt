@@ -1,0 +1,16 @@
+第15题 把本地API数据转换为可读报告
+主题：大杂烩：API、jq、CLI约定与Markdown 建议用时：12—15分钟
+在q15中创建给定JSON和本地HTTP服务，再用curl与jq生成简短Markdown报告。
+给定内容
+[
+{"name":"alpha","status":"active","downloads":120,"version":"1.2.0"},
+{"name":"beta","status":"inactive","downloads":900,"version":"2.0.0"},
+{"name":"gamma","status":"active","downloads":450,"version":"1.5.1"},
+{"name":"delta","status":"active","downloads":450,"version":"0.9.0"},
+{"name":"epsilon","status":"active","downloads":80,"version":"3.1.0"}
+]
+题目要求
+• 把给定JSON保存为packages.json，并在q15目录运行python-mhttp.server 8000。
+• 使用curl-fsS 获取http://127.0.0.1:8000/packages.json。
+• 使用jq筛选status为active且downloads不少于100的记录，并按downloads降序、name升序排列。
+• 编写api_report.sh，把结果生成summary.md，包含标题和name/version/downloads三列表格。

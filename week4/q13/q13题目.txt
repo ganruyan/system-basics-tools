@@ -1,0 +1,8 @@
+第13题 建立可执行的本地质量门禁
+主题：代码质量 建议用时：12—15分钟
+复用第10题完成的greetlab包，在q13中建立一个轻量本地质量检查。
+题目要求
+• 复制q10为q13；在pyproject.toml中加入ruff和pytest的最小配置。
+• 补充一个正常姓名测试和一个空白姓名测试，每个测试包含有效断言。
+• 运行ruffformat、ruff check 和 pytest，修复全部问题，不得全局忽略规则。
+• 编写check.sh，依次执行ruffformat--check、ruff check 和 pytest；运行并保证返回0。
