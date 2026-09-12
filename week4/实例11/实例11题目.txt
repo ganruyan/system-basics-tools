@@ -1,0 +1,1 @@
+构建属于您的 GitHub action，对仓库中所有的 .md 文件执行 proselint 或 write-good，在您的仓库中开启这一功能，提交一个包含错误的文件看看该功能是否生效。
