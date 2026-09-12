@@ -1,0 +1,229 @@
+% !TeX program = xelatex
+% ============================================================
+% 系统开发工具基础 · 第四周实验报告
+% 姓名：甘如嫣  学号：25090032014
+% 编译：xelatex 实验报告_第4周.tex
+% ============================================================
+\documentclass[12pt,a4paper]{ctexart}
+
+\usepackage[margin=2.2cm]{geometry}
+\usepackage{graphicx}
+\usepackage{listings}
+\usepackage{xcolor}
+\usepackage{enumitem}
+\usepackage{booktabs}
+\usepackage{amsmath}
+\usepackage{float}
+\usepackage[hidelinks]{hyperref}
+\usepackage{fancyhdr}
+
+\definecolor{theme}{RGB}{40,80,140}
+
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{\small\color{theme}系统开发工具基础 · 实验报告}
+\fancyhead[R]{\small 甘如嫣}
+\fancyfoot[C]{\small\thepage}
+\renewcommand{\headrule}{\color{theme}\rule{\headwidth}{0.4pt}}
+
+\lstset{
+  basicstyle=\ttfamily\small,
+  breaklines=true,
+  frame=single,
+  backgroundcolor=\color{gray!8},
+  showstringspaces=false,
+}
+
+\emergencystretch=3em
+
+\newcommand{\shot}[3]{\begin{figure}[H]\centering\includegraphics[width=#3]{#2}\caption{#1}\end{figure}}
+
+\begin{document}
+
+% ================= 封面 =================
+\begin{titlepage}
+\centering
+\vspace*{3cm}
+{\Huge\bfseries\color{theme} 实验报告\par}
+\vspace{0.8cm}
+{\LARGE 系统开发工具基础（第四周）\par}
+\vspace{2.5cm}
+\begin{tabular}{rl}
+\textbf{姓名} & 甘如嫣 \\
+\textbf{学号} & 25090032014 \\
+\textbf{日期} & \today \\
+\end{tabular}
+\vfill
+\end{titlepage}
+
+\tableofcontents
+\newpage
+
+% ================= 1. GitHub =================
+\section{GitHub 仓库与提交记录}
+
+\subsection{仓库链接}
+仓库地址：\url{https://github.com/ganruyan/system-basics-tools}
+
+\subsection{提交记录}
+本周材料按题目分组分次提交，未使用单次全量提交。
+
+\shot{GitHub 提交记录}{report_imgs/commits.png}{0.92\textwidth}
+
+% ================= 2. 课上检查 =================
+\section{课上给助教检查的内容与结果}
+
+本节为课上完成、交由助教检查的四道课堂练习及其结果。
+
+\subsection{第 13 题：建立可执行的本地质量门禁}
+
+\textbf{主题：}代码质量 \quad \textbf{建议用时：}12--15 分钟
+
+复用 greetlab 包，在 \texttt{q13} 中建立一个轻量本地质量检查。
+
+\begin{itemize}[leftmargin=2em]
+  \item 复制 \texttt{q10} 为 \texttt{q13}；在 \texttt{pyproject.toml} 中加入 ruff 和 pytest 的最小配置。
+  \item 补充一个正常姓名测试和一个空白姓名测试，每个测试包含有效断言。
+  \item 运行 \texttt{ruff format}、\texttt{ruff check} 和 \texttt{pytest}，修复全部问题，不得全局忽略规则。
+  \item 编写 \texttt{check.sh}，依次执行 \texttt{ruff format --check}、\texttt{ruff check} 和 \texttt{pytest}；运行并保证返回 0。
+\end{itemize}
+
+\textbf{结果：}
+\shot{第 13 题（a）ruff 与 pytest 检查结果}{report_imgs/q13a.png}{0.9\textwidth}
+\shot{第 13 题（b）check.sh 运行结果}{report_imgs/q13b.png}{0.9\textwidth}
+
+\subsection{第 14 题：让 Make 只重建真正受影响的产物}
+
+\textbf{主题：}元编程：构建系统 \quad \textbf{建议用时：}12--15 分钟
+
+在 \texttt{q14} 中按给定内容创建三个源文件，只需完成 Makefile。
+
+\begin{itemize}[leftmargin=2em]
+  \item 创建给定的 \texttt{data.csv}、\texttt{stats.py}、\texttt{build\_report.py} 和 \texttt{report.md}。
+  \item 编写 Makefile，包含 \texttt{all}、\texttt{stats.txt}、\texttt{report.txt} 和 \texttt{clean}；准确列出数据文件、脚本和中间产物依赖，并把 \texttt{all}、\texttt{clean} 声明为 \texttt{.PHONY}。
+  \item 验证首次 make 生成两个产物；第二次无改动时不执行配方。
+  \item \texttt{touch data.csv} 后再次 make，确认 \texttt{stats.txt} 和 \texttt{report.txt} 重新生成；clean 只删除生成物。
+\end{itemize}
+
+\textbf{结果：}
+\shot{第 14 题（a）Makefile 依赖与首次构建}{report_imgs/q14a.png}{0.9\textwidth}
+\shot{第 14 题（b）增量构建与 clean 清理}{report_imgs/q14b.png}{0.9\textwidth}
+
+\subsection{第 15 题：把本地 API 数据转换为可读报告}
+
+\textbf{主题：}API、jq、CLI 约定与 Markdown \quad \textbf{建议用时：}12--15 分钟
+
+在 \texttt{q15} 中创建给定 JSON 和本地 HTTP 服务，再用 curl 与 jq 生成简短 Markdown 报告。
+
+\begin{itemize}[leftmargin=2em]
+  \item 把给定 JSON 保存为 \texttt{packages.json}，并在 \texttt{q15} 目录运行 \texttt{python -m http.server 8000}。
+  \item 使用 \texttt{curl -fsS} 获取 \texttt{http://127.0.0.1:8000/packages.json}。
+  \item 使用 jq 筛选 status 为 active 且 downloads 不少于 100 的记录，并按 downloads 降序、name 升序排列。
+  \item 编写 \texttt{api\_report.sh}，把结果生成 \texttt{summary.md}，包含标题和 name/version/downloads 三列表格。
+\end{itemize}
+
+\textbf{结果：}
+\shot{第 15 题（a）本地服务与 curl 获取数据}{report_imgs/q15a.png}{0.9\textwidth}
+\shot{第 15 题（b）jq 筛选与生成的 summary.md}{report_imgs/q15b.png}{0.9\textwidth}
+
+\subsection{第 16 题：修复并交付一个陌生的小型工具仓库}
+
+\textbf{主题：}课堂综合测试 \quad \textbf{建议用时：}12--15 分钟
+
+复用第 13 题的项目，在 \texttt{q16} 中完成一次 15 分钟综合检查。
+
+\begin{itemize}[leftmargin=2em]
+  \item 复制 \texttt{q13} 为 \texttt{q16} 并初始化/继续使用 Git。
+  \item 把问候语实现临时改成始终返回字面量 \texttt{Hello, name!}，运行 \texttt{check.sh} 确认测试失败；随后定位并修复。
+  \item 编写最小 Makefile，包含 \texttt{check}、\texttt{build} 和 \texttt{clean}；check 调用 \texttt{check.sh}，build 生成 wheel。
+  \item 运行 \texttt{make check} 和 \texttt{make build}，计算 wheel 的 SHA-256，并把最终改动提交为一个内容聚焦的 Git 提交。
+\end{itemize}
+
+\textbf{结果：}
+\shot{第 16 题（a）make check 与 make build}{report_imgs/q16a.png}{0.9\textwidth}
+\shot{第 16 题（b）wheel 的 SHA-256 与最终提交}{report_imgs/q16b.png}{0.9\textwidth}
+
+% ================= 3. 课后练习 =================
+\section{课后练习（11 个实例）}
+
+课后练习共完成 11 个实例，全部在 Ubuntu 虚拟机的终端中实际操作完成。
+
+\subsection{实例 1：正则与 grep 查找危险代码}
+\textbf{题目：}编写正则表达式，用 grep 在代码中查找 \texttt{subprocess.Popen(..., shell=True)} 的出现位置；随后故意``破坏''这个正则，观察 semgrep 是否仍能匹配到让 grep 失效的危险代码。
+
+\shot{实例 1：grep 与 semgrep 匹配结果}{report_imgs/n01a.png}{0.9\textwidth}
+
+\subsection{实例 2：正则提取 JSON 中的 name}
+\textbf{题目：}写一个 regex 从形如 \texttt{\{"name": "Alyssa P. Hacker", "college": "MIT"\}} 的 JSON 中捕获 name。第一次尝试容易把 \texttt{Alyssa P. Hacker", "college": "MIT} 一起提取出来，需要借助 Python regex 文档理解贪婪量词并修复。
+
+\shot{实例 2：正则提取与修复后的结果}{report_imgs/n02a.png}{0.9\textwidth}
+
+\subsection{实例 3：black、flake8 与 pre-commit 钩子}
+\textbf{题目：}在本地 Git 仓库配置 black（格式化器）、flake8（linter）与 pre-commit 钩子。编写带格式错误、lint 错误的 Python 代码，验证提交时 black 自动修复格式；剩余 lint 错误交由编程辅助工具生成修复代码，人工对比 diff 确认没有破坏原有逻辑。
+
+\shot{实例 3（a）pre-commit 拦截与报错}{report_imgs/n03a.png}{0.9\textwidth}
+\shot{实例 3（b）修复后提交通过}{report_imgs/n03b.png}{0.9\textwidth}
+
+\subsection{实例 4：pytest 单元测试与覆盖率报告}
+\textbf{题目：}为项目编写单元测试，用 pytest-cov 生成 HTML 覆盖率报告并观察未覆盖的行；覆盖率较低时补充测试用例，观察覆盖率提升。
+
+\textbf{结果：}初始只测试了加法和减法，覆盖率 62\%，HTML 报告里 div 函数整段标红；补充除法的正常与除零异常两个用例后，4 个测试全部通过，覆盖率提升到 100\%。
+
+\shot{实例 4（a）初始覆盖率 62\%}{report_imgs/n04a.png}{0.9\textwidth}
+\shot{实例 4（b）补充测试后覆盖率 100\%}{report_imgs/n04c.png}{0.9\textwidth}
+
+\subsection{实例 5：持续集成流水线}
+\textbf{题目：}搭建持续集成流水线，在 push 阶段自动触发``格式校验 $\rightarrow$ 静态检查 $\rightarrow$ 单元测试''三级质量门禁，任一环节失败即阻断推送。人为注入格式错误与 Lint 违规，验证门禁能拦截问题代码；修复后验证流水线恢复正常。
+
+\shot{实例 5（a）注入错误后门禁拦截推送}{report_imgs/n05a.png}{0.9\textwidth}
+\shot{实例 5（b）修复后三级门禁通过}{report_imgs/n05b.png}{0.9\textwidth}
+
+\subsection{实例 6：正则查找替换 Markdown 项目符号}
+\textbf{题目：}练习 regex 查找替换，把讲义中的 \texttt{-} 项目符号替换为 \texttt{*}。直接替换所有 \texttt{-} 是不正确的，因为文件中 \texttt{-} 还有日期、连字符等非项目符号用途；用 \texttt{\textasciicircum- } 限定行首的列表标记。
+
+\shot{实例 6（a）替换前 grep 查看多种用途}{report_imgs/n06a.png}{0.9\textwidth}
+\shot{实例 6（b）替换后验证普通横线未被改动}{report_imgs/n06b.png}{0.9\textwidth}
+
+\subsection{实例 7：Makefile 的 clean 构建目标}
+\textbf{题目：}在 paper.pdf 的 Makefile 中实现 clean 目标，用 \texttt{rm -f} 清理生成的 PDF 与辅助文件，并将构建目标声明为 \texttt{.PHONY}；可用 \texttt{git ls-files} 区分源文件与生成物。
+
+\shot{实例 7（a）make 构建生成产物}{report_imgs/n07a.png}{0.9\textwidth}
+\shot{实例 7（b）make clean 清理产物}{report_imgs/n07b.png}{0.9\textwidth}
+
+\subsection{实例 8：Cargo 依赖版本约束语法}
+\textbf{题目：}学习 Rust 构建系统的依赖管理，对每种语法（尖号、波浪号、通配符、比较、多个版本要求）构建一个实际场景。在 Cargo.toml 中为 serde、rand、toml、regex、log 分别配置 \texttt{\textasciicircum 1.0.188}、\texttt{\textasciitilde 0.8.5}、\texttt{0.8.*}、\texttt{>=1.7.0}、\texttt{>=0.4.14, <0.5} 并注释场景含义。
+
+\shot{实例 8：Cargo.toml 五种版本约束及场景}{report_imgs/n08a.png}{0.9\textwidth}
+
+\subsection{实例 9：pre-commit 钩子构建检查}
+\textbf{题目：}编写 pre-commit 钩子，在提交前执行 \texttt{make paper.pdf}，构建失败则拒绝提交，避免产生包含不可构建版本的提交。
+
+\textbf{结果：}故意把 \texttt{\textbackslash begin\{document\}} 拼错为 \texttt{\textbackslash begin\{doc\}}，提交时 pdflatex 报 LaTeX Error，钩子终止提交；修复后再次提交成功。
+
+\shot{实例 9（a）构建失败拒绝提交}{report_imgs/n09a.png}{0.9\textwidth}
+\shot{实例 9（b）修复后提交成功}{report_imgs/n09b.png}{0.9\textwidth}
+
+\subsection{实例 10：shellcheck 检查 shell 脚本}
+\textbf{题目：}用 shellcheck 对仓库中所有 shell 文件做静态检查。在 test.sh 中故意写入等号两侧空格、变量未加双引号等错误，shellcheck 报出 SC1007、SC2086 等规则；修复后检查无输出。
+
+\shot{实例 10（a）shellcheck 报错}{report_imgs/n10a.png}{0.9\textwidth}
+\shot{实例 10（b）修复后批量检查通过}{report_imgs/n10b.png}{0.9\textwidth}
+
+\subsection{实例 11：proselint 检查 Markdown 文档}
+\textbf{题目：}对仓库中所有 .md 文件执行 proselint 写作风格检查。在 test.txt 中写入含 \texttt{very}、\texttt{utilize} 等不规范用词的句子，proselint 报出 weasel\_words.very 和 misc.greylist 规则；干净文本检查后无告警。
+
+\shot{实例 11（a）proselint 报错}{report_imgs/n11a.png}{0.9\textwidth}
+\shot{实例 11（b）干净文本检查通过}{report_imgs/n11b.png}{0.9\textwidth}
+
+% ================= 4. 解题感悟 =================
+\section{解题感悟}
+
+这一周的内容明显比前面更接近真实工程：格式化、lint、测试覆盖率、持续集成，每一项都是在给代码上``保险''。我的第一个坑还是老问题——环境。装 pre-commit 时 Ubuntu 直接报 \texttt{externally-managed-environment}，全局 pip 装不了，后来才想到用虚拟环境解决；这类问题看报错就能定位，但第一次遇到时还是会懵。
+
+做覆盖率练习时感受最明显：一开始只写了加法和减法的测试，跑出来只有 62\%，HTML 报告里 div 函数整段标红，我才直观理解``覆盖率低意味着代码没被跑过''。补上除法的正常和除零两个用例后到 100\%，但这个 100\% 也提醒我，覆盖率只代表执行到了，不代表测对了边界，真正要补的其实是负数、精度这类情况。
+
+还有几个容易忽略的小坑：proselint 新版本命令格式变成了 \texttt{proselint check}，直接按旧教程敲文件名会报错；Makefile 里命令前面必须是 Tab 而不是空格；git 钩子写好后要 \texttt{chmod +x} 才会执行。这些错误本身都不难，难的是报错信息一出来能不能沉住气一条条读。
+
+这周最大的收获是把前面的零散命令串成了``质量门禁''的思路：格式化器管排版、linter 管规范、测试管功能，再靠 pre-commit 和 CI 在提交和推送时自动把关。做 AI 辅助修复的练习时我也意识到，工具给的代码只能当草稿，每一步改动都要自己 diff 检查，确认没有破坏原有逻辑才能提交。
+
+\end{document}
