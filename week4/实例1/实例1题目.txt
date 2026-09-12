@@ -1,0 +1,1 @@
+试着写一个正则表达式，并使用 grep 命令行工具 在你的代码中查找 subprocess.Popen(..., shell=True) 的出现位置。然后，试着“破坏”这个 regex 模式。semgrep 是否仍然能成功匹配到那些会让你的 grep 调用失效的危险代码？

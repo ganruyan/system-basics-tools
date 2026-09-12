@@ -1,0 +1,1 @@
+写一个 regex，从形如 {"name": "Alyssa P. Hacker", "college": "MIT"} 的 JSON 结构中捕获 name（例如本例中的 Alyssa P. Hacker）。提示：在第一次尝试时，你可能最终会写出一个提取 Alyssa P. Hacker", "college": "MIT 的 regex；读一读 Python regex 文档中关于贪婪量词的内容，弄清楚如何修复它。
