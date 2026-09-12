@@ -1,0 +1,1 @@
+在本地 Git 仓库配置 black（格式化器）、flake8（linter）与 pre‑commit 钩子。编写带有格式错误、lint 错误的 Python 代码，验证提交时 black 自动修复格式；剩余 lint 错误，交给 AI 生成修复代码，人工对比 diff 确认 AI 没有破坏原有逻辑，最终修复全部错误。
